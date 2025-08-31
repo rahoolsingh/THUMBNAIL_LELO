@@ -214,6 +214,10 @@ function Create() {
 
             {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
 
+            <h2 className="text-lg font-semibold border p-2 rounded-xl">
+                Paywall Integration Coming Tonight!
+            </h2>
+
             {isGenerating && (
                 <div className="flex items-center gap-2 text-sm text-blue-600">
                     <Loader2 className="animate-spin" size={16} />
