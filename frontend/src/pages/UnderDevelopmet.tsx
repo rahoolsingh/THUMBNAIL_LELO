@@ -1,5 +1,5 @@
 import { useTheme } from "@/components/theme-provider";
-import { Clock, Wrench } from "lucide-react";
+import { AlertTriangle, Clock } from "lucide-react";
 
 import logoDark from "../assets/logo-dark.png";
 import logoLight from "../assets/logo-light.png";
@@ -30,17 +30,15 @@ function UnderDevelopment() {
             {/* Under Development Message */}
             <div className="w-full max-w-2xl flex flex-col gap-6">
                 <div className="flex flex-col gap-4 w-full py-8 px-8 border border-gray-300 rounded-4xl text-center">
-                    {/* Icon */}
-                    <div className="flex justify-center mb-2">
-                        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-full">
-                            <Wrench className="text-gray-500" size={32} />
-                        </div>
-                    </div>
-
                     {/* Main Message */}
                     <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-                        Under Development
+                        We Apologize for the Inconvenience
                     </h2>
+
+                    <h3 className="bg-red-100 text-red-700 px-4 py-2 rounded-xl flex flex-col items-center gap-2 text-sm font-medium w-fit m-auto">
+                        <AlertTriangle className="text-red-500" size={24} />
+                        High Traffic Overload
+                    </h3>
 
                     <p className="text-gray-600 dark:text-gray-400 text-sm">
                         We're working hard to bring you something amazing. This
@@ -56,14 +54,14 @@ function UnderDevelopment() {
                     </div>
 
                     {/* Progress Indicator */}
-                    <div className="mt-4">
+                    {/* <div className="mt-4">
                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div className="bg-teal-500 h-2 rounded-full w-3/4"></div>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                             Development Progress: 75%
                         </p>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* What's Coming */}
