@@ -47,7 +47,6 @@ const saveImages = async (req: Request, res: Response, next: NextFunction) => {
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-        console.log("No files uploaded");
         req.uploadedFiles = []; // ✅ Ensure it's always defined
         return next(); // ✅ Prevents further execution
     }

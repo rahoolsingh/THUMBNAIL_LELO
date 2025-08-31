@@ -51,7 +51,6 @@ const generateThumbnail = async (req: Request, res: Response) => {
             ...base64Images,
         ];
 
-        console.log("Generated contents:", contents[0]);
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash-image-preview",
@@ -61,11 +60,9 @@ const generateThumbnail = async (req: Request, res: Response) => {
             },
         });
 
-        console.log(response);
 
         for (const part of response.candidates[0].content.parts) {
             if (part.text) {
-                console.log(part.text);
             } else if (part.inlineData) {
                 const imageData = part.inlineData.data;
                 const buffer = Buffer.from(imageData, "base64");
@@ -80,7 +77,6 @@ const generateThumbnail = async (req: Request, res: Response) => {
             }
         }
 
-        console.log("No image part found in the response");
     } catch (error: any) {
         console.error("Error generating thumbnails:", error.message);
         return res.status(500).json({ error: "Failed to generate thumbnails" });

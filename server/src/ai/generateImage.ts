@@ -12,8 +12,7 @@ async function main() {
 
     const prompt = [
         {
-            text:
-                "make the person in the image look like king of the jungle",
+            text: "make the person in the image look like king of the jungle",
         },
         {
             inlineData: {
@@ -26,16 +25,14 @@ async function main() {
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-image-preview",
         contents: prompt,
-        config
+        config,
     });
     for (const part of response.candidates[0].content.parts) {
         if (part.text) {
-            console.log(part.text);
         } else if (part.inlineData) {
             const imageData = part.inlineData.data;
             const buffer = Buffer.from(imageData, "base64");
             fs.writeFileSync("gemini-native-image.png", buffer);
-            console.log("Image saved as gemini-native-image.png");
         }
     }
 }

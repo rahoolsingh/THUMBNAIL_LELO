@@ -5,6 +5,7 @@ import cors from "cors";
 import generateRoutes from "./routes/generateRoutes.ts";
 import { saveImages, uploadImages } from "./middlewares/imageUpload.ts";
 import enhancePrompt from "./routes/enhancePrompt.ts";
+import mongoose from "mongoose";
 
 const PORT = process.env.PORT || 3000;
 
@@ -31,6 +32,15 @@ app.use(
     generateRoutes
 );
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port http://localhost:${PORT}`);
-});
+// MongoDB connection and app listen
+mongoose
+    .connect(process.env.MONGODB_URI || "")
+    .then(() => {
+        console.log(`Connected to MongoDB`);
+        app.listen(PORT, () => {
+            console.log(`Server is running on port http://localhost:${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error(`Error connecting to MongoDB: ${error.message}`);
+    });
