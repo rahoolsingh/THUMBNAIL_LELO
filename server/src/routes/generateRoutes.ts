@@ -1,14 +1,8 @@
 import { Router } from "express";
+import generateThumbnail from "../controllers/generateThumbnail.ts";
 
 const generateRoutes = Router();
 
-generateRoutes.post("/thumbnail", async (req, res) => {
-    // Handle image generation logic here
-    res.send({
-        success: true,
-        message: "Image generated successfully",
-        data: req.uploadedFiles,
-    });
-});
+generateRoutes.post("/thumbnail", generateThumbnail);
 
 export default generateRoutes;

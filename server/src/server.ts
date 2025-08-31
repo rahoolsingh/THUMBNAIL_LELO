@@ -4,6 +4,7 @@ import "dotenv/config";
 import cors from "cors";
 import generateRoutes from "./routes/generateRoutes.ts";
 import { saveImages, uploadImages } from "./middlewares/imageUpload.ts";
+import enhancePrompt from "./routes/enhancePrompt.ts";
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,6 +27,7 @@ app.use(
     requireAuth(),
     uploadImages,
     saveImages,
+    enhancePrompt,
     generateRoutes
 );
 

@@ -47,11 +47,14 @@ const saveImages = async (req: Request, res: Response, next: NextFunction) => {
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-        return [];
+        console.log("No files uploaded");
+        req.uploadedFiles = []; // ✅ Ensure it's always defined
+        return next(); // ✅ Prevents further execution
     }
 
     const uploadedFiles: {
         originalName: string;
+        mimeType: string;
         fileName: string;
         url: string;
     }[] = [];
@@ -68,6 +71,7 @@ const saveImages = async (req: Request, res: Response, next: NextFunction) => {
 
         uploadedFiles.push({
             originalName: file.originalname,
+            mimeType: file.mimetype,
             fileName,
             url,
         });

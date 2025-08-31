@@ -14,10 +14,12 @@
   "dependencies": {
     "@clerk/express": "^1.7.26",
     "@google/genai": "^1.16.0",
+    "axios": "^1.11.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "mime": "^4.0.7",
     "multer": "^2.0.2",
+    "openai": "^5.16.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
