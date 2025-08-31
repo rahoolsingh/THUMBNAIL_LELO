@@ -32,6 +32,14 @@ function Create() {
 
     const fileRef = useRef<HTMLInputElement | null>(null);
 
+    // track command + enter to submit
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter" && event.metaKey) {
+            event.preventDefault();
+            handleSubmit();
+        }
+    };
+
     const handleSubmit = async () => {
         if (!isSignedIn) return;
 
@@ -133,6 +141,7 @@ function Create() {
                                 setUserPrompt(e.target.value);
                                 setError(null);
                             }}
+                            onKeyDown={handleKeyDown}
                             rows={userPrompt.split("\n").length || 1}
                             required
                         />
