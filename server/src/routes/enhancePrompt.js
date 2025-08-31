@@ -21,9 +21,9 @@ Your job is to generate a **highly detailed thumbnail design prompt** based on t
 - Use **bold, readable text** with proper contrast (mention color, style, and placement).
 - Suggest **background colors, theme, and objects** to make the design visually appealing.
 - Include stickers, emojis, or logos only if necessary.
-- The **first white webp image** provided is **only for size reference** — always design on a **9:16 landscape canvas**.
 - All other uploaded images **must** be incorporated into the thumbnail unless stated otherwise.
-${uploadfilesLength > 0 ? `- Also, integrate the ${uploadfilesLength + 1} uploaded images seamlessly within the thumbnail design.` : ""}
+- Also describe if image contain a face, priority should be given to facial features.
+${uploadfilesLength > 0 ? `- Also, integrate the ${uploadfilesLength} uploaded images seamlessly within the thumbnail design.` : ""}
 
 **Output must only describe the thumbnail design — no greetings, no extra explanations.**
 `;

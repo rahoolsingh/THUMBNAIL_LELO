@@ -2,7 +2,7 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
-import { createCanvas, loadImage } from "canvas";
+import sharp from "sharp";
 
 // Define the upload directory
 const uploadDir = path.join("temp/uploads");
@@ -20,7 +20,7 @@ const upload = multer({
     storage,
     limits: {
         fileSize: 10 * 1024 * 1024, // 10MB per file
-        files: 5, // max 5 files
+        files: 5,
     },
     fileFilter: (req, file, callback) => {
         const allowedTypes = [
@@ -38,44 +38,20 @@ const upload = multer({
     },
 });
 
-async function convertToLandscape(
-    base64,
-    mimeType,
-    width = 1280,
-    height = 720
-) {
-    // Some images (like WEBP) may not be supported → convert buffer to PNG first if needed
-    let img;
-    try {
-        img = await loadImage(`data:${mimeType};base64,${base64}`);
-    } catch (e) {
-        console.warn(
-            `⚠️ loadImage failed for ${mimeType}, forcing PNG fallback...`
-        );
-        img = await loadImage(`data:image/png;base64,${base64}`);
-    }
-
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext("2d");
-
-    // Fill background black
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, width, height);
-
-    // Contain scaling
-    const scale = Math.min(width / img.width, height / img.height);
-    const drawWidth = img.width * scale;
-    const drawHeight = img.height * scale;
-    const dx = (width - drawWidth) / 2;
-    const dy = (height - drawHeight) / 2;
-
-    ctx.drawImage(img, dx, dy, drawWidth, drawHeight);
-
-    // Always output PNG for safe compatibility
-    return canvas.toBuffer("image/png").toString("base64");
+// Helper → Convert image to 16:9 landscape using sharp
+async function convertToLandscape(buffer, width = 1280, height = 720) {
+    return sharp(buffer)
+        .resize({
+            width,
+            height,
+            fit: "contain", // ✅ Preserve aspect ratio
+            background: { r: 0, g: 0, b: 0, alpha: 1 }, // Black bars
+        })
+        .png() // ✅ Always output safe PNG
+        .toBuffer();
 }
 
-// Middleware → Save uploaded images and convert them to 16:9 landscape
+// Middleware → Save images and convert them to 16:9 landscape PNG
 const saveImages = async (req, res, next) => {
     try {
         const files = req.files;
@@ -88,24 +64,20 @@ const saveImages = async (req, res, next) => {
         const uploadedFiles = [];
 
         for (const file of files) {
-            const fileName = randomUUID() + path.extname(file.originalname);
-            const originalBase64 = file.buffer.toString("base64");
+            const fileName = randomUUID() + ".png"; // ✅ Final output always PNG
 
-            // ✅ Use correct mimeType instead of forcing PNG
-            const landscapeBase64 = await convertToLandscape(
-                originalBase64,
-                file.mimetype
-            );
+            // ✅ Convert image into 16:9 landscape PNG
+            const processedBuffer = await convertToLandscape(file.buffer);
 
             // Build URL if needed
             const url = `/uploads/${fileName}`;
 
             uploadedFiles.push({
                 originalName: file.originalname,
-                mimeType: "image/png", // ✅ Now always outputs PNG thumbnails
+                mimeType: "image/png",
                 fileName,
                 url,
-                data: landscapeBase64,
+                data: processedBuffer.toString("base64"), // ✅ Base64 PNG
             });
         }
 
@@ -115,7 +87,7 @@ const saveImages = async (req, res, next) => {
         console.error("Error converting images:", error);
         return res
             .status(500)
-            .json({ message: "Image processing failed", error: error.message });
+            .json({ message: "Image processing failed", error });
     }
 };
 
