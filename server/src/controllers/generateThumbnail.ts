@@ -3,6 +3,8 @@ import { GoogleGenAI } from "@google/genai";
 import "dotenv/config";
 import fs from "fs";
 import { randomUUID } from "crypto";
+import { clerkClient, getAuth } from "@clerk/express";
+import { User } from "../models/usermodel.ts";
 
 const ai = new GoogleGenAI({});
 
@@ -27,6 +29,29 @@ const getBase64Images = async (uploadedFiles: any[]): Promise<object[]> => {
 };
 
 const generateThumbnail = async (req: Request, res: Response) => {
+    const { userId } = getAuth(req);
+
+    if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const user = await User.findOne({ userid: userId });
+    if (!user) {
+        // create in mongodb
+        const newUser = new User({
+            userid: userId,
+        });
+        await newUser.save();
+    } else if (user.freeQuota < 1) {
+        return res
+            .status(403)
+            .json({
+                success: false,
+                message: "Free quota exceeded",
+                error: "User has no free quota left",
+            });
+    }
+
     try {
         const { prompt } = req.body;
         const uploadedFiles = req?.uploadedFiles || [];
@@ -51,7 +76,6 @@ const generateThumbnail = async (req: Request, res: Response) => {
             ...base64Images,
         ];
 
-
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash-image-preview",
             contents,
@@ -60,23 +84,31 @@ const generateThumbnail = async (req: Request, res: Response) => {
             },
         });
 
+        const user = await User.findOne({ userid: userId });
+
+        // deduct user free quota
+        user.freeQuota -= 1;
+        await user.save();
 
         for (const part of response.candidates[0].content.parts) {
             if (part.text) {
             } else if (part.inlineData) {
                 const imageData = part.inlineData.data;
                 const buffer = Buffer.from(imageData, "base64");
-                const file = fs.writeFileSync(`temp/generated/${randomUUID()}.png`, buffer);
+                const file = fs.writeFileSync(
+                    `temp/generated/${randomUUID()}.png`,
+                    buffer
+                );
 
                 return res.status(200).json({
                     success: true,
                     message: part.text || "Thumbnail generated",
                     image: `data:image/png;base64,${imageData}`,
-                    prompt: req.body.prompt
+                    prompt: req.body.prompt,
+                    quotaLeft: user.freeQuota,
                 });
             }
         }
-
     } catch (error: any) {
         console.error("Error generating thumbnails:", error.message);
         return res.status(500).json({ error: "Failed to generate thumbnails" });
