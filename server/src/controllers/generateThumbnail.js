@@ -81,7 +81,6 @@ const generateThumbnail = async (req, res) => {
             else if (part.inlineData) {
                 const imageData = part.inlineData.data;
                 const buffer = Buffer.from(imageData, "base64");
-                const file = fs.writeFileSync(`temp/generated/${randomUUID()}.png`, buffer);
                 return res.status(200).json({
                     success: true,
                     message: part.text || "Thumbnail generated",
