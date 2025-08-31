@@ -6,7 +6,7 @@ export default function App({ children }: { children: React.ReactNode }) {
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <div className="flex flex-col min-h-dvh w-full">
                 <Header />
-                <main className="max-w-7xl mx-auto p-5 flex-1 w-full">
+                <main className="max-w-7xl mx-auto p-5 flex-1 w-full h-full flex flex-col">
                     {children}
                 </main>
             </div>
