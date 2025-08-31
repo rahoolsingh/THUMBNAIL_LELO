@@ -5,6 +5,7 @@ import { ClerkProvider, UserProfile } from "@clerk/react-router";
 import "./index.css";
 import App from "./App.tsx";
 import { shadcn } from "@clerk/themes";
+import Create from "./pages/Create.tsx";
 
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -20,10 +21,13 @@ createRoot(document.getElementById("root")!).render(
                 publishableKey={PUBLISHABLE_KEY}
                 appearance={{ baseTheme: shadcn }}
             >
-                <Routes>
-                    <Route path="/" element={<App />} />
-                    <Route path="/profile" element={<UserProfile />} />
-                </Routes>
+                <App>
+                    <Routes>
+                        <Route path="/" element={<h1>Home</h1>} />
+                        <Route path="/profile" element={<UserProfile />} />
+                        <Route path="/create" element={<Create />} />
+                    </Routes>
+                </App>
             </ClerkProvider>
         </BrowserRouter>
     </StrictMode>
