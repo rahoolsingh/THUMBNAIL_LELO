@@ -10,12 +10,12 @@ const getBase64Images = async (uploadedFiles) => {
         return [];
     }
     const base64Images = uploadedFiles.map((file) => {
-        const imagePath = file.url.replace("/uploads/", "temp/uploads/");
-        const imageData = fs.readFileSync(imagePath);
+        // const imagePath = file.url.replace("/uploads/", "temp/uploads/");
+        const imageData = file.data;
         const base64Image = {
             inlineData: {
                 mimeType: file.mimeType,
-                data: imageData.toString("base64"),
+                data: imageData,
             },
         };
         return base64Image;
@@ -51,15 +51,18 @@ const generateThumbnail = async (req, res) => {
         const contents = [
             {
                 text:
-                    (prompt || "Create a thumbnail for my youtube video") +
-                    "\nIMPORTANT: The white image provided is for the size reference. Make sure to follow this 16:9 aspect ratio.",
+                    prompt ||
+                    `Create a thumbnail for my youtube video.
+                    IMPORTANT: 
+        The 1st white image provided in webp format is for the size reference. Make sure to follow this 16:9 aspect ratio. Always create a thumbnail that fits within these dimensions and orientation landscape.
+        Never Generate a thumbnail in portrait mode.`,
             },
-            {
-                inlineData: {
-                    mimeType: "image/png",
-                    data: sizeImageBase64,
-                },
-            },
+            // {
+            //     inlineData: {
+            //         mimeType: "image/webp",
+            //         data: sizeImageBase64,
+            //     },
+            // },
             ...base64Images,
         ];
         const response = await ai.models.generateContent({
@@ -76,10 +79,12 @@ const generateThumbnail = async (req, res) => {
             } else if (part.inlineData) {
                 const imageData = part.inlineData.data;
                 const buffer = Buffer.from(imageData, "base64");
-                
+
                 // deduct user free quota
                 user.freeQuota -= 1;
                 await user.save();
+
+                console.log(response.candidates[0]);
 
                 return res.status(200).json({
                     success: true,

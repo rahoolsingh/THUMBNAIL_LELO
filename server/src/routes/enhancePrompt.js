@@ -1,32 +1,46 @@
 import "dotenv/config";
 import OpenAI from "openai";
 const client = new OpenAI({
-    apiKey: process.env.GOOGLE_GEMINI_API_KEY, // ✅ Use env var
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    // apiKey: process.env.GOOGLE_GEMINI_API_KEY, // ✅ Use env var
+    // baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
 });
 const enhancePrompt = async (req, res, next) => {
-    const SYSTEM_PROMPT = `
-        You are a professional YouTube thumbnail designer.
-        Your task is to improve the user's thumbnail idea by describing exactly how the thumbnail should look.
 
-        Focus on:
-        - Background colors and theme
-        - Text style and font usage
-        - Placement of main objects/images
-        - Stickers, logos, icons, or emojis if needed
-        - Keep it visually appealing, clean, and NOT cluttered.
-    `;
+    const uploadfilesLength = req?.uploadedFiles?.length || 0;
+
+const SYSTEM_PROMPT = `
+You are a professional YouTube thumbnail designer. 
+Your job is to generate a **highly detailed thumbnail design prompt** based on the user's video title, description, and any provided images.
+
+**Follow this structure for the output:**
+"A photorealistic [shot type] of [main subject or key elements], [specific action or expression], set in [background/environment/theme]. The scene is illuminated by [lighting style], creating a [mood/emotion] atmosphere. Captured with a [camera/lens style or focus], emphasizing [key textures, colors, and details]. The image should be in a 16:9 aspect ratio, landscape orientation."
+
+**Design Rules:**
+- Use **vibrant, eye-catching visuals** and keep the thumbnail **clean, minimal, and non-cluttered**.
+- Clearly highlight the **main subject** relevant to the video.
+- Use **bold, readable text** with proper contrast (mention color, style, and placement).
+- Suggest **background colors, theme, and objects** to make the design visually appealing.
+- Include stickers, emojis, or logos only if necessary.
+- The **first white webp image** provided is **only for size reference** — always design on a **9:16 landscape canvas**.
+- All other uploaded images **must** be incorporated into the thumbnail unless stated otherwise.
+${uploadfilesLength > 0 ? `- Also, integrate the ${uploadfilesLength + 1} uploaded images seamlessly within the thumbnail design.` : ""}
+
+**Output must only describe the thumbnail design — no greetings, no extra explanations.**
+`;
+
     try {
         const messages = [
             { role: "system", content: SYSTEM_PROMPT },
             { role: "user", content: req.body.prompt },
         ];
         const response = await client.chat.completions.create({
-            model: "gemini-2.0-flash", // ✅ Gemini model
+            model: "gpt-4.1-mini-2025-04-14", // ✅ Gemini model
             messages,
         });
         const rawContent = response.choices[0].message.content || "";
         const content = rawContent.trim();
+
+        console.log("Enhanced Prompt:", content);
         req.body.prompt = content;
         next();
     }

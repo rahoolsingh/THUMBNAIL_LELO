@@ -65,6 +65,7 @@ const saveImages = async (req: Request, res: Response, next: NextFunction) => {
         mimeType: string;
         fileName: string;
         url: string;
+        data: string;
     }[] = [];
 
     for (const file of files) {
@@ -82,6 +83,7 @@ const saveImages = async (req: Request, res: Response, next: NextFunction) => {
             mimeType: file.mimetype,
             fileName,
             url,
+            data: file.buffer.toString("base64"),
         });
     }
 
