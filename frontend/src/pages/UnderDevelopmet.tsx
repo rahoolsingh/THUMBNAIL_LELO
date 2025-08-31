@@ -1,6 +1,5 @@
 import { useTheme } from "@/components/theme-provider";
-import { Clock, Wrench, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Clock, Wrench } from "lucide-react";
 
 import logoDark from "../assets/logo-dark.png";
 import logoLight from "../assets/logo-light.png";
@@ -8,11 +7,6 @@ import line1 from "../assets/line-2.png";
 
 function UnderDevelopment() {
     const { theme } = useTheme();
-
-    const handleGoBack = () => {
-        // Navigate back or to home page
-        console.log("Navigate back to home");
-    };
 
     return (
         <div className="flex flex-col items-center justify-center h-full flex-1 gap-8">
