@@ -7,9 +7,9 @@
     "type": "module",
     "main": "src/server.ts",
     "scripts": {
-        "dev": "nodemon --exec ts-node --esm src/server.ts",
+        "dev": "nodemon src/server.ts",
         "build": "tsc",
-        "start": "node dist/server.js"
+        "start": "node src/server.js"
     },
     "dependencies": {
         "@clerk/express": "^1.7.26",
@@ -24,6 +24,7 @@
         "uuid": "^11.1.0"
     },
     "devDependencies": {
+        "@tsconfig/node22": "^22.0.2",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.3",
         "@types/multer": "^2.0.0",
