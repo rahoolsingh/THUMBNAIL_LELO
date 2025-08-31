@@ -5,7 +5,7 @@
     "license": "ISC",
     "author": "veerrajpoot.com",
     "type": "module",
-    "main": "src/server.ts",
+    "main": "src/server.js",
     "scripts": {
         "dev": "nodemon src/server.ts",
         "build": "tsc",
