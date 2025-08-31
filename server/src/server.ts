@@ -2,9 +2,9 @@ import express from "express";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
 import "dotenv/config";
 import cors from "cors";
-import generateRoutes from "./routes/generateRoutes.ts";
-import { saveImages, uploadImages } from "./middlewares/imageUpload.ts";
-import enhancePrompt from "./routes/enhancePrompt.ts";
+import generateRoutes from "./routes/generateRoutes.js";
+import { saveImages, uploadImages } from "./middlewares/imageUpload.js";
+import enhancePrompt from "./routes/enhancePrompt.js";
 import mongoose from "mongoose";
 
 const PORT = process.env.PORT || 3000;

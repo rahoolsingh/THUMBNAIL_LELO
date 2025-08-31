@@ -4,7 +4,7 @@ import "dotenv/config";
 import fs from "fs";
 import { randomUUID } from "crypto";
 import { clerkClient, getAuth } from "@clerk/express";
-import { User } from "../models/usermodel.ts";
+import { User } from "../models/usermodel.js";
 
 const ai = new GoogleGenAI({});
 

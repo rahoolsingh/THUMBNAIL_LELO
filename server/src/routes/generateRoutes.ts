@@ -1,5 +1,5 @@
 import { Router } from "express";
-import generateThumbnail from "../controllers/generateThumbnail.ts";
+import generateThumbnail from "../controllers/generateThumbnail.js";
 
 const generateRoutes = Router();
 

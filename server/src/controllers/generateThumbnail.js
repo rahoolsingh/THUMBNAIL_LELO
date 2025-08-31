@@ -3,7 +3,7 @@ import "dotenv/config";
 import fs from "fs";
 import { randomUUID } from "crypto";
 import { getAuth } from "@clerk/express";
-import { User } from "../models/usermodel.ts";
+import { User } from "../models/usermodel.js";
 const ai = new GoogleGenAI({});
 const getBase64Images = async (uploadedFiles) => {
     if (!uploadedFiles || uploadedFiles.length === 0) {
