@@ -127,7 +127,7 @@ function Create() {
                     <div className="flex items-center justify-center gap-2">
                         <textarea
                             value={userPrompt}
-                            placeholder="Describe your thumbnail..."
+                            placeholder="Describe your thumbnail or give your video title/topic..."
                             className="w-full !border-none !outline-none resize-none !ring-0"
                             onChange={(e) => {
                                 setUserPrompt(e.target.value);
