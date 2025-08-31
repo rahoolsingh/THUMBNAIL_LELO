@@ -1,4 +1,4 @@
-import { SignIn, SignInButton, useUser } from "@clerk/clerk-react";
+import { SignInButton, useUser } from "@clerk/clerk-react";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Play } from "lucide-react";
