@@ -34,11 +34,8 @@ const generateThumbnail = async (req, res) => {
             userid: userId,
         });
         await newUser.save();
-    }
-    else if (user.freeQuota < 1) {
-        return res
-            .status(403)
-            .json({
+    } else if (user.freeQuota < 1) {
+        return res.status(403).json({
             success: false,
             message: "Free quota exceeded",
             error: "User has no free quota left",
@@ -53,7 +50,8 @@ const generateThumbnail = async (req, res) => {
         const sizeImageBase64 = sizeImageData.toString("base64");
         const contents = [
             {
-                text: (prompt || "Create a thumbnail for my youtube video") +
+                text:
+                    (prompt || "Create a thumbnail for my youtube video") +
                     "\nIMPORTANT: The white image provided is for the size reference. Make sure to follow this 16:9 aspect ratio.",
             },
             {
@@ -72,15 +70,17 @@ const generateThumbnail = async (req, res) => {
             },
         });
         const user = await User.findOne({ userid: userId });
-        // deduct user free quota
-        user.freeQuota -= 1;
-        await user.save();
+
         for (const part of response.candidates[0].content.parts) {
             if (part.text) {
-            }
-            else if (part.inlineData) {
+            } else if (part.inlineData) {
                 const imageData = part.inlineData.data;
                 const buffer = Buffer.from(imageData, "base64");
+                
+                // deduct user free quota
+                user.freeQuota -= 1;
+                await user.save();
+
                 return res.status(200).json({
                     success: true,
                     message: part.text || "Thumbnail generated",
@@ -90,8 +90,7 @@ const generateThumbnail = async (req, res) => {
                 });
             }
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error generating thumbnails:", error.message);
         return res.status(500).json({ error: "Failed to generate thumbnails" });
     }
