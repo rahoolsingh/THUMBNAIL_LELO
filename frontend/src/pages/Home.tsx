@@ -45,12 +45,6 @@ function Home() {
                     in seconds.
                 </p>
 
-                <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg w-fit m-auto my-3">
-                    <p className="font-semibold">Demo Credentials:</p>
-                    <p className="text-xs">Username: veer</p>
-                    <p className="text-xs">Password: vN3E5rpNK2N68mJ</p>
-                </div>
-
                 <div>
                     {isSignedIn ? (
                         <div className="space-y-3 mx-auto flex flex-col justify-center items-center">
