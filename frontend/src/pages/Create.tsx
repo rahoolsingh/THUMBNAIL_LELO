@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { CommandIcon, CornerDownLeft, PlusCircle, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
+import useFetch from "@/hooks/authenticatedFetch";
 
 function Create() {
+    const fetchData = useFetch();
     const { isSignedIn } = useUser();
     const { theme } = useTheme();
 
@@ -16,6 +18,32 @@ function Create() {
     const [imageFiles, setImageFiles] = useState<File[]>([]);
 
     const fileRef = useRef<HTMLInputElement | null>(null);
+
+    const handleSubmit = async () => {
+        if (!isSignedIn) return;
+
+        const formData = new FormData();
+        formData.append("prompt", userPrompt);
+        imageFiles.forEach((file) => {
+            formData.append("images", file);
+        });
+
+        try {
+            const response = await fetchData<{
+                message: string;
+                files: string[];
+            }>("http://localhost:3000/api/v1/generate/thumbnail", {
+                method: "POST",
+                data: formData,
+            });
+
+            console.log("Upload successful:", response.data);
+            alert("Uploaded: " + response.data.files.join(", "));
+        } catch (error: any) {
+            console.error("Error uploading files:", error);
+            alert(error.response?.data?.message || "Upload failed");
+        }
+    };
 
     if (!isSignedIn) return <div>Please sign in to create a post</div>;
 
@@ -47,7 +75,10 @@ function Create() {
                             onChange={(e) => setUserPrompt(e.target.value)}
                             rows={userPrompt.split("\n").length || 1}
                         />
-                        <Button className="flex items-center gap-2">
+                        <Button
+                            onClick={handleSubmit}
+                            className="flex items-center gap-2"
+                        >
                             Run
                             <span className="flex items-center gap-1 text-xs scale-75">
                                 <CommandIcon />
