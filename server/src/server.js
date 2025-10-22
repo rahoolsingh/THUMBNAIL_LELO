@@ -15,7 +15,7 @@ app.use(
     })
 );
 app.use(clerkMiddleware());
-app.get("/", (req, res) => {
+app.get("/api/v1/", (req, res) => {
     res.send("Hello World!");
 });
 app.use(
@@ -32,7 +32,9 @@ mongoose
     .then(() => {
         console.log(`Connected to MongoDB`);
         app.listen(PORT, () => {
-            console.log(`Server is running on port http://localhost:${PORT}`);
+            console.log(
+                `Server is running on port http://localhost:${PORT}/api/v1/`
+            );
             console.log(`CORS_ORIGIN: ${process.env.CORS_ORIGIN}`);
         });
     })
